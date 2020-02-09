@@ -53,7 +53,7 @@
 <meta property="og:site_name" content="Tan90Qian&#39;s blog">
 <meta property="og:description" content="AboutMonorepoMonorepo 是一种项目的组织方式，许多开源项目均采用这种组织方式，如create-react-app、react-router、babel，基本的项目结构如下123456├── packages|   ├── pkg1|   |   ├── package.json|   ├── pkg2|   |   ├── package.json├── package.jso">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-09T08:38:47.798Z">
+<meta property="og:updated_time" content="2020-02-09T08:48:36.407Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://tan90qian.github.io/blog/2020/02/09/Monorepo-and-CI/">
@@ -192,8 +192,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-02-09 16:38:47" itemprop="dateCreated datePublished" datetime="2020-02-09T16:38:47+08:00">2020-02-09</time>
+              <time title="创建时间：2020-02-09 16:38:47 / 修改时间：16:48:36" itemprop="dateCreated datePublished" datetime="2020-02-09T16:38:47+08:00">2020-02-09</time>
             </span>
 
           
@@ -230,7 +231,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npx lerna bootstrap <span class="comment"># 为各个子项目安装依赖，并根据package.json中的依赖配置创建symlink</span></span><br><span class="line">npx lerna list <span class="comment"># 查看本项目识别到的子项目名，以确定bootstrap操作是否成功</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="通过-lerna-批量操作"><a href="#通过-lerna-批量操作" class="headerlink" title="通过 lerna 批量操作"></a>通过 lerna 批量操作</h2><p>若要对所有子项目进行打包，可以通过<code>lerna run &lt; script &gt;</code>执行各个子项目 package.json 下的 script 命令，如 build、test。<br>若要清除所有子项目的<code>node_modules</code>，可以执行<code>lerna clean</code>命令。</p>
-<h2 id="创建-CI"><a href="#创建-CI" class="headerlink" title="创建 CI"></a>创建 CI</h2><p>Github Action 的 CI 采用<code>YAML</code>格式的文件进行配置，并将配置文件存放在<code>./github/workflows</code>下。最基本的 ci 配置文件如下：</p>
+<h2 id="创建-CI"><a href="#创建-CI" class="headerlink" title="创建 CI"></a>创建 CI</h2><p>Github Action 的 CI 采用<code>YAML</code>格式的文件进行配置，并将配置文件存放在<code>./.github/workflows</code>下。最基本的 ci 配置文件如下：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">CI</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span> <span class="string">[push]</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">a</span> <span class="string">one-line</span> <span class="string">script</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">echo</span> <span class="string">Hello,</span> <span class="string">world!</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">a</span> <span class="string">multi-line</span> <span class="string">script</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">Add</span> <span class="string">other</span> <span class="string">actions</span> <span class="string">to</span> <span class="string">build,</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">test,</span> <span class="string">and</span> <span class="string">deploy</span> <span class="string">your</span> <span class="string">project.</span></span><br></pre></td></tr></table></figure>
 
 <p>将配置文件修改为通过 lerna 执行 build、test，以验证项目的可用性：</p>
