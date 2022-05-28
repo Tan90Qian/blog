@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="alternate" href="/blog/atom.xml" title="Tan90Qian's blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="2020 年初，一场新的全球大流行疫情的爆发，可能永久的改变了我们的生活。起初，我们以为它会像非典那样，仅仅是时代的一朵浪花，转瞬即逝；但随着病毒不断变异，越来越强的传染性给人类社会的未来蒙上了一层阴影，也将 08 年次贷危机隐隐揭露的让人恐慌的可能狠狠的拍在了所有人的脸上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小布尔乔亚在新冠时代的一点思考">
+<meta property="og:url" content="http://tan90qian.github.io/blog/2022/05/28/Thinking-In-The-Age-Of-COVID-19/">
+<meta property="og:site_name" content="Tan90Qian&#39;s blog">
+<meta property="og:description" content="2020 年初，一场新的全球大流行疫情的爆发，可能永久的改变了我们的生活。起初，我们以为它会像非典那样，仅仅是时代的一朵浪花，转瞬即逝；但随着病毒不断变异，越来越强的传染性给人类社会的未来蒙上了一层阴影，也将 08 年次贷危机隐隐揭露的让人恐慌的可能狠狠的拍在了所有人的脸上。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-28T10:27:23.000Z">
+<meta property="article:modified_time" content="2022-05-28T10:27:23.712Z">
+<meta property="article:author" content="Tan90Qian">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tan90qian.github.io/blog/2022/05/28/Thinking-In-The-Age-Of-COVID-19/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>小布尔乔亚在新冠时代的一点思考 | Tan90Qian's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tan90Qian's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人机交互爱好者的随笔</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://Tan90Qian.github.io/blog/blog/2022/05/28/Thinking-In-The-Age-Of-COVID-19/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="Tan90Qian">
+      <meta itemprop="description" content="A FrontEnd developer's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tan90Qian's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小布尔乔亚在新冠时代的一点思考
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-28 18:27:23" itemprop="dateCreated datePublished" datetime="2022-05-28T18:27:23+08:00">2022-05-28</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2020 年初，一场新的全球大流行疫情的爆发，可能永久的改变了我们的生活。起初，我们以为它会像非典那样，仅仅是时代的一朵浪花，转瞬即逝；但随着病毒不断变异，越来越强的传染性给人类社会的未来蒙上了一层阴影，也将 08 年次贷危机隐隐揭露的让人恐慌的可能狠狠的拍在了所有人的脸上。</p>
+<a id="more"></a>
+
+<h2 id="疫情影响"><a href="#疫情影响" class="headerlink" title="疫情影响"></a>疫情影响</h2><p>据不完全统计，截止 2021 年年底，全球新冠直接死亡人数已经超 500w，而超额死亡总人数可能高达 1800w。进入 2022 年后，Omicron 变异株不论变异频率还是传染能力都是早期毒株所无法比拟的。或许 2022 年，超额死亡就将达到 3000w 甚至 4000w 以上，而这仅仅是新冠的直接杀伤力。真正让人看到恐惧的，是它对于社会运转效率的持续杀伤：医疗系统的崩溃，长期后遗症对生活工作的阻碍，劳动力缺失导致的通胀居高不下等。<br>对于英国，据 ONS 统计，截止 2022 年 4 月 3 日，全英共有 Long Covid 患者约 180 万，占全人口 2.8%（注意这个是现有人数）；足足有 23w 人的长期后遗症已经持续超过 2 年。从 2019 年年底开始，（英国）劳动力市场就一直在萎缩，总共少了 45 万劳动力，或者说占整个劳动力市场的 1.3%，大概有 32 万人经济不活跃的原因在于长期的疾病。<br>对于美国，根据 Brookings 研究所的报告估算，截至 2022 年初，全美约 3 千万壮年人士可能受到新冠感染后遗症影响，可能有高达 160 万人份的劳动力短缺是新冠感染后遗症的锅，占了当前美国全部劳动力短缺的 15%。</p>
+<p>在人类社会逐渐被长期后遗症所困扰的同时，Omicron 突然飙升的传染能力也一举攻破了本就摇摇欲坠的发达国家医疗系统。<br>对于英国的 NHS，2022 年 3 月，总共 636 万人在等待择期住院治疗，继续创下历史记录（比上个月再加 18 万）其中等待超过一年的人数约 30.6 万，与之对比，2019 年 3 月份择期治疗等待超过一年的人数仅为 1154 人。<br>对于韩国，40%医护人员感染新冠，因确诊新冠而被隔离的医疗机构职员占全体职员的 5%至 6%，即使被确诊，仅隔离 3 天后就要出来继续看护患者。</p>
+<p>伴随着新冠 2 年以来的肆虐以及一些突发事件（比如俄乌冲突），发达国家开始进入高通胀阶段，美国 2022 年通胀长期维持在 8%以上，欧洲各国也纷纷进入 5%以上。这也迫使美国开始执行激进的加息政策，并进一步增加了经济衰退风险。</p>
+<p>而在当下这个时间节点（5 月 28 日），首发于南非的 Omicron 新子毒株 BA.4/BA.5 已经成功登陆欧洲并给葡萄牙带来了又一轮传染高峰，或许 2 个月内新一轮疫情便会抵达亚洲。于此同时，欧洲各国内突然出现的猴痘社区感染也让人感到惊慌。“21 世纪是生物学的世纪”正以一种让人不舒服的方式成为现实。</p>
+<h2 id="裁员潮"><a href="#裁员潮" class="headerlink" title="裁员潮"></a>裁员潮</h2><p>作为第一个受到疫情冲击的国家，我们在经历了 2020 年上半年的危机后，似乎逐渐恢复到了正常的生产生活中，直到 2022 年 3 月上海“分区封控”。<br>3 月以来，各行业又一次感受到了疫情的严重影响，实体企业纷纷停工；而作为这个时代经济风口的互联网行业，则开始了近几年最疯狂的裁员潮——虽然他们现在管这叫“毕业”。</p>
+<p>其实在 2022 之前，裁员潮的风险早有预告。2018 年末的 996·ICU 事件就暗示了未来，之后的每年年末也会有一波较大规模的裁员潮，但总被人以“末位淘汰”、“人员优化”等理由搪塞过去，毕竟从比例上讲确实不高。但 2022 年 3 月之后，各个大厂开始竞赛裁员规模，从 10%一路飙升到 25%，甚至不少企业在半年内经历了连续数轮裁员。直到这时，“劳动力相对过剩”的危机才被所有人意识到，</p>
+<p>企业的目标终究是盈利，过去十年资金成本低，通过多轮融资可以轻松获取发展、扩张所需的资金，保证企业始终处于“创业”心态，持续增加员工规模并尝试拓展各种业务线。但在新冠疫情时代，失去了融资这一法宝，互联网公司终究要回到传统企业那种自负盈亏的运营模式，“裁员裁到盈利”恐怕会是大多数企业的必经之路，甚至有必要的话可能还要进行一波“全员降薪”——只要相对其他行业还有薪资优势，就不怕招不到人。</p>
+<p>在这样的背景下，打工人内卷的目标已经从比其他人更快的晋升变成了尽力让自己不被裁员。但在他人制定并随时可以修改的规则中，又怎么可能保证得了自己的权益呢？</p>
+<h2 id="真正的自由"><a href="#真正的自由" class="headerlink" title="真正的自由"></a>真正的自由</h2><p>伴随着 996·ICU 事件而来的，是城市小布尔乔亚们对于所谓“财富自由”的狂热追求：出于对未来不确定性的恐惧，人们迫切的需要一个可以定量的指标来锚定自己的目标，并麻痹自己，让自己忘却所恐惧的不确定性以及对 996 的厌恶，专注于完成一个单一指标。</p>
+<p>小布尔乔亚们认为只要通过工作、理财等手段，让自己的收入积累到一个水平后，便可以脱离现在这种生活所带来的不安感。但在金融资本主义阶段下，他们的这种想法本质上只是被刻意塑造出来的一个梦幻泡影、空中楼阁。对于大多数普通人而言，这仅仅是一个理想目标，而缺乏真实的可操作性。</p>
+<p>资本主义本质上是等级制的、排斥性的。它曾经宣称可以让所有人获得一定程度的经济保障和平等，并以凯恩斯主义加以实践。但随着 1971 年美国因越南战争带来的巨大财政赤字而抛弃金本位制，人类社会进入金融资本主义阶段，这个梦想第一次破灭了。</p>
+<p>但即便没有这一外部事件的影响，“人人平等”的理想也终究难以实现：如果所有工人都是自由雇佣的劳动者，该体系甚至很可能不再具有可行性。资本主义通过暴力威慑强制性地将人与他们的背景割裂开来，然后让他们等同于其他的东西，并通过债务让人们不得不出卖自己的体力和脑力以换取生存所必要的资源。债务是什么？在资本主义框架下，这是对一个承诺的曲解，是一个被数字和暴力腐化的承诺。这是一个刻意设计的，为了保证少数人权益的等级制规则。</p>
+<p>在最为广阔的世界里，正如没人有权告诉我们真正的价值是什么一样，也没人有权告诉我们，我们究竟欠别人什么。</p>
+<h2 id="金融资本与有息债务"><a href="#金融资本与有息债务" class="headerlink" title="金融资本与有息债务"></a>金融资本与有息债务</h2><p>在产业资本阶段，企业获得利润后会将其投入再生产以提高生产力，获得竞争优势，而工人的工资也在这个过程中逐步增加。</p>
+<p>但到了金融资本阶段，金融机构却成为了封建地主式的存在。它基于科技革命带来的生产力发展和人口增加，做出了一个潜在假设：全球每年商品和服务总产出增加至少 5%（或者其他值），因此合理的利息率并不违法。</p>
+<p>在这一阶段，生产力和工资的联系被切断，生产率持续增长，但工资陷入了停滞甚至萎缩状态。资本的金融化意味着大多数投资于市场的货币已完全和贸易生产脱离关系，而成为纯粹的投机。</p>
+<p>这一制度的设计，以及诸多国际机构（如世界银行、联合国、WTO）的设立并没有保护债务人，而是加强了债权人的权利——它们鼓励所有人去成为食利者，从资本家越发惊人的剥削中吃到一块肉——这使得大多数为薪酬工作的人，感觉到他们主要是在为偿还有息贷款而工作。</p>
+<p>而对普通人而言，他们所背负的有息贷款，又恰恰是制度刻意维持的结果：从相当于“进城税”的房贷，到发达国家流行的助学贷款，以及信用卡之类新兴的信贷手段，无一不是在一开始就暗示了普通人的未来——以终身的工作去完成制度对个体的需求。</p>
+<p>造成这个局面的是暴力威胁，美国通过军事霸气维持着当下这个全球化体系，并对任何想要突破、脱离这个体系的存在进行毁灭性打击。最初的受害者，或者说杀鸡儆猴的对象，便是伊拉克的侯赛因·萨达姆。</p>
+<p>而长达几十年暴力威慑所维持的金融资本主义阶段，慢慢的产生了一个极其不妙的影响：大多数人——甚至包括政治家和学者——都已经无法想象脱离金融资本主义的可能，人类的群体想象力失去了遭遇危机后的调整能力。</p>
+<p>而新冠的出现，以及俄乌冲突的爆发，让金融资本主义对于有息债务合法性的假设出现了破灭——人类社会的整体生产力可能在一段时间发生倒退——若无法及时调整，它的未来又会是什么呢？</p>
+<h3 id="中东经济史的借鉴意义"><a href="#中东经济史的借鉴意义" class="headerlink" title="中东经济史的借鉴意义"></a>中东经济史的借鉴意义</h3><p>假如在当下，大众缺乏足够的想象力来描述其他的可能，或许我们可以尝试把目光放到历史长河中，看看古代文明经历过哪些经济转变。</p>
+<p>在伊拉克这个曾经孕育出两河文明的地区，5000 年来发生过至少两次重大的、戏剧性的道德和金融创新。</p>
+<p>第一次创新是公元前 3000 年前后，出现了原始的有息债务；第二次创新则是在公元 800 年前后，这一地区发展出了有史以来第一套复杂而明确反对有息债务的商业体系。</p>
+<p>在中世纪的伊斯兰世界，相比于有息投资，商人更倾向于采用合伙制，由一方提供资本，另外的人进行经营管理。投资者收到的会是一定份额的利润而不是固定的收益。</p>
+<p>同时，不同于亚当·斯密所认为的“劳动分工是人类为了获得个人利益的结果”，伊斯兰教法学家认为这是互帮互助的延伸，市场最主要关乎合作而非竞争。</p>
+<p>货币，或者说市场化的货币，则是为了实现交换而诞生的用于衡量两种东西价值的事物。但与现代经济思想不同的是，伊斯兰教法学家认为只有根本没有特性的东西才能让两者都与之相比较，货币本身没有目的、没有内生价值，它起到的是媒介的作用，促使实现财货交换的目的。从这个前提推论，出借货币收取利息便是非法的，因为这种使用货币的方式意味着将货币本身作为目的。</p>
+<p>基于这个推论，中世纪伊斯兰商人阶级废除了无数世纪以来使他们遭到邻人厌恶的高利贷行径，从而得以成为他们社团的实际领袖。同时伊斯兰世界的自由市场是一个人与人握手建立协议，票据上的承诺只以签发者的诚实为依托。这个事实本身意味着，自由市场不可能真正变成后世学者所想象的世界：完全自利的个人用任何可用的手段谋取物质利益。</p>
+<h3 id="俄乌冲突的价值"><a href="#俄乌冲突的价值" class="headerlink" title="俄乌冲突的价值"></a>俄乌冲突的价值</h3><p>2022 年 2 月 24 日，一件会影响足以影响世界经济体系的事件发生了：俄乌冲突爆发。这一场“特别军事行动”的其他方面暂且不提，它最大的价值便是为第三世界国家摆脱以美国为核心的吸血全球的金融资本体系提供了千载难逢的机会。</p>
+<p>曾经的美国借助全世界几百个军事基地形成的对任意目标进行致命打击及军事干预的力量，让全球的货币系统围绕美元来组织。这种形式的权力之所以到这次冲突发生前基本还能发挥作用，是因为它保持着符号性。而当暴力以超出极度克制且主要是象征性的方式被使用的那一刻起，这种对绝对权力的感知就会遭到破坏。</p>
+<p>在这次冲突中，“北约天兵”不敢亲自下场的拉垮表现、欧美各国无力的经济制裁手段以及俄罗斯通过卢布锚定天然气的出色应对手段将这个基于暴力威慑所维持的体系的基石敲掉了一角。</p>
+<p>接下来，或许我们可以把目光放到中东，看看曾经受迫于美国而让美元成为石油交易所唯一货币的 OPEC 成员国（尤其是伊朗一系）是否，以及何时，会继俄罗斯之后向美国的盟友和代理人吹响反抗的号角。</p>
+<h2 id="劳动-工作-人的价值"><a href="#劳动-工作-人的价值" class="headerlink" title="劳动/工作/人的价值"></a>劳动/工作/人的价值</h2><p>放回个人的视角，我们或许应该重新认识一下劳动、工作及人的价值。</p>
+<p>马克思认为人是劳动的产物,劳动创造了人类生存所必需的全部物质条件和精神条件。但劳动是否等于工作，尤其是金融资本阶段为了还债而进行的工作？子曰“学而不思则罔,思而不学则殆”，人需要劳动将思考成果、自我认知进行巩固，这个过程应当是自由的、非受迫的。</p>
+<p>而在现代社会，由于制度化的设计，大多数人一生都在为了他人的要求而不得不工作。近几年越来越多的人发出了“如果不是没钱，谁愿意上班”的感叹。但太多的人把“有钱”的标准与舆论引导的“财富自由”划上等号，而“财富自由”的标准又是基于消费主义、基于主流观点对货币的追捧上形成的。这本身就是将个人目标深深的捆绑在当下这个已经越来越摇摇欲坠的经济体系中，而近几年“躺平党”的出现也是因为越来越多的人发现了目标的不可实现而陷入自暴自弃的状态（精神躺平党抛开不提）。</p>
+<p>虽然我们无法在群体想象力找到新的可能性之前完全否定金钱的价值，但也应该仔细思考：作为一个个体，金钱的多寡在自我价值中占了多大的比例？出于内心而非外界评价的个人价值究竟应该怎样实现？如何让我们的劳动重新回到它原本的意义上？</p>
+<h2 id="生活方式的探寻"><a href="#生活方式的探寻" class="headerlink" title="生活方式的探寻"></a>生活方式的探寻</h2><p>现在的我们，就仿佛身处于一辆刹车失灵的列车上，不远处便是万丈深渊，没有其他轨道通向不同的道路。</p>
+<p>作为一个城市小布尔乔亚，这个当下这个时间节点，我们应该采取什么的生活方式让自己活的更有意义？</p>
+<p>是继续闭目塞听，浑浑噩噩的跟着列车驶向深渊，只要大家都一样便没什么不好的？</p>
+<p>还是以更疯狂的姿态，最大化的从同行者身上牟利，哪怕会加速当前列车驶向深渊的速度，仅仅是“我死后哪管洪水滔天”？</p>
+<p>亦或者是勇敢的跳车，在他人无法理解的目光中，遵循自己内心的判断，做一个沉默的逆行者？</p>
+<p>我相信，时代变化的方向不仅取决于精英们的决断，也受到时代中每个普通人的选择所形成的群体意志的影响。</p>
+<hr>
+<h2 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h2><ol>
+<li><a href="https://mp.weixin.qq.com/s/-5qEjc2LlxDe4K80WPx53Q" target="_blank" rel="noopener">水池·困境（英国篇，第三集）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PEA8P6ZFuM0xDhzpLsfUGg" target="_blank" rel="noopener">论，躺平的代价（英国篇·第三集）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/D2FI8BfGVtBSqfp3uW6xMQ" target="_blank" rel="noopener">论，躺平的代价（韩国篇）</a></li>
+<li><a href="https://book.douban.com/subject/34978654/" target="_blank" rel="noopener">债 : 5000 年债务史</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/blog/2020/07/11/MonoRepo-With-Web-App/" rel="next" title="基于Monorepo实现Web应用">
+                  <i class="fa fa-chevron-left"></i> 基于Monorepo实现Web应用
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#疫情影响"><span class="nav-number">1.</span> <span class="nav-text">疫情影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#裁员潮"><span class="nav-number">2.</span> <span class="nav-text">裁员潮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#真正的自由"><span class="nav-number">3.</span> <span class="nav-text">真正的自由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#金融资本与有息债务"><span class="nav-number">4.</span> <span class="nav-text">金融资本与有息债务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#中东经济史的借鉴意义"><span class="nav-number">4.1.</span> <span class="nav-text">中东经济史的借鉴意义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#俄乌冲突的价值"><span class="nav-number">4.2.</span> <span class="nav-text">俄乌冲突的价值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#劳动-工作-人的价值"><span class="nav-number">5.</span> <span class="nav-text">劳动&#x2F;工作&#x2F;人的价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生活方式的探寻"><span class="nav-number">6.</span> <span class="nav-text">生活方式的探寻</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考引用"><span class="nav-number">7.</span> <span class="nav-text">参考引用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tan90Qian</p>
+  <div class="site-description" itemprop="description">A FrontEnd developer's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/blog/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tan90Qian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+<div>
+  <p>推荐链接：<a href="https://anran758.github.io/blog/" target="_blank" rel="noopener">Anran758's blog</a></p>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

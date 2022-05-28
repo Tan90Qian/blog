@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="alternate" href="/blog/atom.xml" title="Tan90Qian's blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="React 是目前最流行的 Web 前端 UI 框架之一，借助其创造的 JSX 语法，可以将前端项目以组件为单位进行构建。而蓬勃发展的社区也对如何设计 React 下的组件进行了大量的讨论与实践，甚至还有专门的参考书。今天，笔者将列举自己接触到的 React 组件设计模式。 主流的 React 组件设计模式在 React v16.7 之前，大多数 React 组件都是基于 Class 的。典型的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React组件设计模式">
+<meta property="og:url" content="http://tan90qian.github.io/blog/2019/12/23/React-Design-Pattern/">
+<meta property="og:site_name" content="Tan90Qian&#39;s blog">
+<meta property="og:description" content="React 是目前最流行的 Web 前端 UI 框架之一，借助其创造的 JSX 语法，可以将前端项目以组件为单位进行构建。而蓬勃发展的社区也对如何设计 React 下的组件进行了大量的讨论与实践，甚至还有专门的参考书。今天，笔者将列举自己接触到的 React 组件设计模式。 主流的 React 组件设计模式在 React v16.7 之前，大多数 React 组件都是基于 Class 的。典型的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-23T13:23:33.000Z">
+<meta property="article:modified_time" content="2019-12-23T13:26:17.000Z">
+<meta property="article:author" content="Tan90Qian">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tan90qian.github.io/blog/2019/12/23/React-Design-Pattern/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>React组件设计模式 | Tan90Qian's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tan90Qian's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人机交互爱好者的随笔</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://Tan90Qian.github.io/blog/blog/2019/12/23/React-Design-Pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="Tan90Qian">
+      <meta itemprop="description" content="A FrontEnd developer's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tan90Qian's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React组件设计模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-12-23 21:23:33 / 修改时间：21:26:17" itemprop="dateCreated datePublished" datetime="2019-12-23T21:23:33+08:00">2019-12-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>React 是目前最流行的 Web 前端 UI 框架之一，借助其创造的 JSX 语法，可以将前端项目以组件为单位进行构建。而蓬勃发展的社区也对如何设计 React 下的组件进行了大量的讨论与实践，甚至还有专门的<a href="https://book.douban.com/subject/30275499/" target="_blank" rel="noopener">参考书</a>。今天，笔者将列举自己接触到的 React 组件设计模式。</p>
+<h1 id="主流的-React-组件设计模式"><a href="#主流的-React-组件设计模式" class="headerlink" title="主流的 React 组件设计模式"></a>主流的 React 组件设计模式</h1><p>在 React v16.7 之前，大多数 React 组件都是基于 Class 的。典型的 React Class 组件结构如下：</p>
+<a id="more"></a>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Count</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      count: props.count || <span class="number">1</span>,</span><br><span class="line">      loading: <span class="literal">false</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="keyword">this</span>.fetchCount();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fetchCount = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      loading: <span class="literal">true</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">const</span> count = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="number">10</span>);</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      loading: <span class="literal">false</span>,</span><br><span class="line">      count</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  handleClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(<span class="function">(<span class="params">&#123; count &#125;</span>) =&gt;</span> (&#123;</span><br><span class="line">      count: count + <span class="number">1</span></span><br><span class="line">    &#125;));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; count, loading &#125; = <span class="keyword">this</span>.state;</span><br><span class="line">    <span class="keyword">return</span> loading ? (</span><br><span class="line">      &lt;p&gt;loading...&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    ) : (</span></span><br><span class="line"><span class="regexp">      &lt;div&gt;</span></span><br><span class="line"><span class="regexp">        &lt;p&gt;count: &#123;count&#125;&lt;/</span>p&gt;</span><br><span class="line">        &lt;button onClick=&#123;<span class="keyword">this</span>.handleClick&#125;&gt;click&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，典型的 React 组件主要包含 5 个部分:</p>
+<ul>
+<li>外部 props：父组件传入的属性</li>
+<li>内部 state：组件内部状态</li>
+<li>生命周期钩子函数：由 React 引擎在组件到达对应时间点时自动调用</li>
+<li>事件回调函数：用于响应鼠标、键盘等用户交互行为产生的事件</li>
+<li>UI：这是实际要渲染的内容，一般是根据设计稿、原型图的要求进行设计，并将以上四部分填充进对应位置</li>
+</ul>
+<p>一般来说，基于 class 的组件推荐将<code>UI与逻辑分离</code>，即将上例中的<code>render</code>部分单独拆出去，并组织成<code>无状态</code>组件，由负责逻辑的组件控制交互，改造后的结果如下</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Count</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      count: props.initialCount || <span class="number">1</span>,</span><br><span class="line">      loading: <span class="literal">false</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="keyword">this</span>.fetchCount();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fetchCount = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      loading: <span class="literal">true</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">const</span> count = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="number">10</span>);</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      loading: <span class="literal">false</span>,</span><br><span class="line">      count</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  handleClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(<span class="function">(<span class="params">&#123; count &#125;</span>) =&gt;</span> (&#123;</span><br><span class="line">      count: count + <span class="number">1</span></span><br><span class="line">    &#125;));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; count, loading &#125; = <span class="keyword">this</span>.state;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;CountUI count=&#123;count&#125; loading=&#123;loading&#125; onClick=&#123;<span class="keyword">this</span>.handleClick&#125; /&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CountUI</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; count, loading, onClick &#125; = props;</span><br><span class="line">  <span class="keyword">return</span> loading ? (</span><br><span class="line">    &lt;p&gt;loading...&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">  ) : (</span></span><br><span class="line"><span class="regexp">    &lt;div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;p&gt;count: &#123;count&#125;&lt;/</span>p&gt;</span><br><span class="line">      &lt;button onClick=&#123;onClick&#125;&gt;click&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的组件设计模式已经很完善了，但它依然有以下问题：</p>
+<ul>
+<li>常见的<code>类继承</code>不适合用于 React 的逻辑组件，因为作为被继承类的<code>React.Component</code>和<code>React.PureComponent</code>并不是抽象类——js 中也没有这个概念——而逻辑组件往往包含具体行为的生命周期函数</li>
+<li>基于 Class 的逻辑组件，在修改内部状态时，是通过调用<code>this.setState</code>这个特殊 api 来实现的，这是基于 immutable 数据模型的声明式编程的写法。而<code>this</code>参与之后便很难将组件的方法拆离出去</li>
+<li>组件的外部依赖——props——发生变化时，默认情况下会触发组件的 reRender，因此也不方便对逻辑组件使用依赖注入的方式进行解耦</li>
+</ul>
+<p>由于上述原因，当两个不同的逻辑组件具有类似的行为，或者一个逻辑组件的行为由其他两个或者多个逻辑组件的行为组合合成时，无法实现方便的逻辑复用。<br>因此，<a href="https://zh-hans.reactjs.org/docs/higher-order-components.html" target="_blank" rel="noopener"><code>高阶组件</code></a>、<a href="https://zh-hans.reactjs.org/docs/render-props.html" target="_blank" rel="noopener"><code>render props</code></a>等能实现<code>状态逻辑复用</code>的方案被大规模使用了起来，类似的还有 vue 中<code>mixin</code>。但这些方案都只能解决某一类型的问题，而且只共享数据处理逻辑，不会共享数据本身。于是，React 在其<code>16.7.0-alpha</code>版本中推出了<a href="https://zh-hans.reactjs.org/docs/hooks-intro.html" target="_blank" rel="noopener"><code>React Hook</code></a>这一新特性。</p>
+<h1 id="React-Hook-下的组件设计模式"><a href="#React-Hook-下的组件设计模式" class="headerlink" title="React Hook 下的组件设计模式"></a>React Hook 下的组件设计模式</h1><p>在 ReactHook 推出后，逻辑组件的设计有了全新的模式，将上例改造后可以看到如下形式：</p>
+<!-- more -->
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Count</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> [loading, setLoading] = React.useState(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> &#123; count, setCount, onClick &#125; = useCount(props.initialCount);</span><br><span class="line">  useDidMount(setLoading, setCount);</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">CountUI</span> <span class="attr">count</span>=<span class="string">&#123;count&#125;</span> <span class="attr">loading</span>=<span class="string">&#123;loading&#125;</span> <span class="attr">onClick</span>=<span class="string">&#123;onClick&#125;</span> /&gt;</span>;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="xml">function useCount(initialCount = 1) &#123;</span></span><br><span class="line"><span class="xml">  const [count, setCount] = React.useState(initialCount);</span></span><br><span class="line"></span><br><span class="line"><span class="xml">  const handleClick = React.useCallback(() =&gt; &#123;</span></span><br><span class="line"><span class="xml">    setCount(prevCount =&gt; prevCount + 1);</span></span><br><span class="line"><span class="xml">  &#125;, [setCount]);</span></span><br><span class="line"></span><br><span class="line"><span class="xml">  return &#123;</span></span><br><span class="line"><span class="xml">    count,</span></span><br><span class="line"><span class="xml">    setCount,</span></span><br><span class="line"><span class="xml">    onClick: handleClick</span></span><br><span class="line"><span class="xml">  &#125;;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="xml">function useDidMount(setLoading, setCount) &#123;</span></span><br><span class="line"><span class="xml">  const fetchCount = React.useCallback(async () =&gt; &#123;</span></span><br><span class="line"><span class="xml">    setLoading(true);</span></span><br><span class="line"><span class="xml">    const newCount = await Promise.resolve(10);</span></span><br><span class="line"><span class="xml">    setCount(newCount);</span></span><br><span class="line"><span class="xml">    setLoading(false);</span></span><br><span class="line"><span class="xml">  &#125;, [setCount, setLoading]);</span></span><br><span class="line"></span><br><span class="line"><span class="xml">  React.useEffect(() =&gt; &#123;</span></span><br><span class="line"><span class="xml">    fetchCount();</span></span><br><span class="line"><span class="xml">  &#125;, [fetchCount]);</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="xml">function CountUI(props) &#123;</span></span><br><span class="line"><span class="xml">  const &#123; count, loading, onClick &#125; = props;</span></span><br><span class="line"><span class="xml">  return loading ? (</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>loading...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">  ) : (</span></span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;p&gt;count: &#123;count&#125;&lt;/p&gt;</span><br><span class="line">      &lt;button onClick=&#123;onClick&#125;&gt;click&lt;/button&gt;</span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">  );</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是一种基于函数式编程（FP）的组件设计模式：</p>
+<ul>
+<li><code>Count</code>组件聚合层，用于组装各钩子、状态</li>
+<li><code>useCount</code>钩子中定义了<code>handleClick</code>这一函数用于响应鼠标点击事件，并且 count 相关的逻辑更内聚。当修改 count 状态的逻辑变得复杂时，还可以使用<code>useReducer</code>来替代<code>useState</code></li>
+<li><code>useDidMount</code>钩子中实现了类似<code>componentDidMount</code>的功能，并且由于依赖注入更易于维护和逻辑复用</li>
+</ul>
+<p>可以看到，在使用了 ReactHook 之后，组件的逻辑又被再一次分割、解耦，变得更易于维护。</p>
+<p>但是，这种方案并不是完美的：</p>
+<ul>
+<li>useEffect 这一官方钩子并不等同于生命周期，它只是可以将行为模拟成类似的效果，存在相对较高的学习和适应成本，<a href="https://overreacted.io/zh-hans/a-complete-guide-to-useeffect/" target="_blank" rel="noopener">React 核心维护者也对此专门写过一篇博客来描述它的运作机制</a>，初学者可能会长期受困于组件<code>无法正常reRender</code>和<code>reRender死循环</code>两种异常场景中</li>
+<li>哪怕不使用 useEffect 的自定义钩子，由于 hooks 的底层对开发者而言更接近一个<a href="https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e" target="_blank" rel="noopener">类似数组机制的黑盒</a>，因此不光在开发阶段要进行思维调整以适应这一机制，在遇到 BUG 时更要放弃之前的经验</li>
+<li>由于 Hook 这一特性正式推出（v16.8，2018 年 2 月）至今还不足一年，很多第三方测试库都还未针对它做出调整，目前暂时只能通过<a href="https://github.com/testing-library/react-hooks-testing-library" target="_blank" rel="noopener"><code>react-hooks-testing-library</code></a>来对自定义 hook 进行测试，这对于在现有项目上进行重构的团队来说是一个问题</li>
+</ul>
+<p>而除了 ReactHook 外，配合 Mobx 这一状态管理器，还可以带来第三种 React 下的组件设计模式</p>
+<h1 id="基于-Mobx-的-React-组件设计模式"><a href="#基于-Mobx-的-React-组件设计模式" class="headerlink" title="基于 Mobx 的 React 组件设计模式"></a>基于 Mobx 的 React 组件设计模式</h1><p>Mobx 是一个可以独立使用的函数响应式（FRP）状态管理库，一般来说它都是和 React 配合使用（关于 Mobx 的使用可以参考<a href="https://cn.mobx.js.org" target="_blank" rel="noopener">这里</a>）</p>
+<p>但是，这一次我们对 mobx 的使用有别于以往通过<code>provider/inject</code>这一基于 context 的机制，不将其作为类似 Redux 的外部全局状态，而是以<code>组件内部状态</code>的方式使用。具体改造结果如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> CountStore &#123;</span><br><span class="line">  <span class="meta">@observable</span> count: <span class="built_in">number</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">initialCount: <span class="built_in">number</span></span>) &#123;</span><br><span class="line">    runInAction(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.count = initialCount || <span class="number">1</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> CountPresenter &#123;</span><br><span class="line">  <span class="meta">@action</span></span><br><span class="line">  <span class="keyword">static</span> setCount(store: CountStore, count: <span class="built_in">number</span>) &#123;</span><br><span class="line">    store.count = count;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> LoadingStore &#123;</span><br><span class="line">  <span class="meta">@observable</span> loading: <span class="built_in">boolean</span> = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> LoadingPresenter &#123;</span><br><span class="line">  <span class="meta">@action</span></span><br><span class="line">  <span class="keyword">static</span> setLoading(store: LoadingStore, loading: <span class="built_in">boolean</span>) &#123;</span><br><span class="line">    store.loading = loading;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCount</span>(<span class="params">initialCount</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> countStore = <span class="keyword">new</span> CountStore(initialCount);</span><br><span class="line">  <span class="keyword">const</span> loadingStore = <span class="keyword">new</span> LoadingStore();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> onClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    CountPresenter.setCount(countStore, countStore.count + <span class="number">1</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> didMount = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">const</span> newCount = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="number">10</span>);</span><br><span class="line">    CountPresenter.setCount(countStore, newCount);</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> observer(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      didMount();</span><br><span class="line">    &#125;, []);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;CountUI</span><br><span class="line">        count=&#123;countStore.count&#125;</span><br><span class="line">        loading=&#123;loadingStore.loading&#125;</span><br><span class="line">        onClick=&#123;onClick&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> CountProps &#123;</span><br><span class="line">  count: <span class="built_in">number</span>;</span><br><span class="line">  loading: <span class="built_in">boolean</span>;</span><br><span class="line">  onClick: <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CountUI</span>(<span class="params">props: CountProps</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; count, loading, onClick &#125; = props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> loading ? (</span><br><span class="line">    &lt;p&gt;loading...&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">  ) : (</span></span><br><span class="line"><span class="regexp">    &lt;div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;p&gt;count: &#123;count&#125;&lt;/</span>p&gt;</span><br><span class="line">      &lt;button onClick=&#123;onClick&#125;&gt;click&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相比于基于 Class 和基于 Hook 的组件设计模式，这种模式乍一看在代码上有了明显的提升（从 40+行增加到了 70+行）。但它在很大程度上回归了 OOP 的写法，避免了初学 ReactHook 时面对种种 magic 行为的迷惑与随之而来的 bug。同时，近乎完全解耦的写法也使得这种模式下设计出来的组件，更易于编写细粒度的单元测试以提高可维护性。</p>
+<p>但这种模式也带来的新的问题：</p>
+<ul>
+<li><code>onClick</code>、<code>didMount</code>这种直接与组件交互相关的函数因为被<code>createCount</code>这一工厂函数形成的闭包包裹，无法直接测试，需要提升到集成测试环境</li>
+<li>每一次工厂函数调用会产生一个新组件，它们才是可以被其他组件调用、渲染的单元，而不是工厂函数本身</li>
+<li>由于闭包的关系，新组件在其 UI 被销毁后，状态并不会清空重置，因此行为与<code>全局状态</code>类型，需要设置用于清空数据的销毁钩子</li>
+<li>当需要以列表的形式渲染多个具有内部状态的组件时，这种模式略显纠结</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/blog/2020/02/09/Monorepo-and-CI/" rel="prev" title="Monorepo and CI">
+                  Monorepo and CI <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#主流的-React-组件设计模式"><span class="nav-number">1.</span> <span class="nav-text">主流的 React 组件设计模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#React-Hook-下的组件设计模式"><span class="nav-number">2.</span> <span class="nav-text">React Hook 下的组件设计模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于-Mobx-的-React-组件设计模式"><span class="nav-number">3.</span> <span class="nav-text">基于 Mobx 的 React 组件设计模式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tan90Qian</p>
+  <div class="site-description" itemprop="description">A FrontEnd developer's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/blog/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tan90Qian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+<div>
+  <p>推荐链接：<a href="https://anran758.github.io/blog/" target="_blank" rel="noopener">Anran758's blog</a></p>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

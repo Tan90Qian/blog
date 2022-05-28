@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="alternate" href="/blog/atom.xml" title="Tan90Qian's blog" type="application/atom+xml">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在上文中提到了一种基于 mobx 的 React 组件设计方案：它将状态与逻辑剥离到 mobx 中，并通过工厂函数将它们与组件进行关联、注入，通过分层解决了前端组件基于UI进行测试的脆弱性与组件生命周期被自动调用影响测试结果的问题。但这种设计模式同样产生了一些新的问题，在本篇中，我们将逐一尝试解决。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React组件设计模式（2）">
+<meta property="og:url" content="http://tan90qian.github.io/blog/2020/04/06/React-Design-Pattern-2/">
+<meta property="og:site_name" content="Tan90Qian&#39;s blog">
+<meta property="og:description" content="在上文中提到了一种基于 mobx 的 React 组件设计方案：它将状态与逻辑剥离到 mobx 中，并通过工厂函数将它们与组件进行关联、注入，通过分层解决了前端组件基于UI进行测试的脆弱性与组件生命周期被自动调用影响测试结果的问题。但这种设计模式同样产生了一些新的问题，在本篇中，我们将逐一尝试解决。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-06T09:36:05.000Z">
+<meta property="article:modified_time" content="2020-04-06T09:36:05.194Z">
+<meta property="article:author" content="Tan90Qian">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tan90qian.github.io/blog/2020/04/06/React-Design-Pattern-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>React组件设计模式（2） | Tan90Qian's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tan90Qian's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人机交互爱好者的随笔</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://Tan90Qian.github.io/blog/blog/2020/04/06/React-Design-Pattern-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="Tan90Qian">
+      <meta itemprop="description" content="A FrontEnd developer's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tan90Qian's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React组件设计模式（2）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-06 17:36:05" itemprop="dateCreated datePublished" datetime="2020-04-06T17:36:05+08:00">2020-04-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在<a href="/blog/2019/12/23/React-Design-Pattern/" title="上文">上文</a>中提到了一种基于 mobx 的 React 组件设计方案：它将<code>状态与逻辑</code>剥离到 <code>mobx</code> 中，并通过<code>工厂函数</code>将它们与组件进行关联、<code>注入</code>，通过分层解决了前端组件<code>基于UI进行测试的脆弱性</code>与<code>组件生命周期被自动调用影响测试结果</code>的问题。但这种设计模式同样产生了一些新的问题，在本篇中，我们将逐一尝试解决。</p>
+<a id="more"></a>
+
+<h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><h2 id="闭包导致的-api-不可测试"><a href="#闭包导致的-api-不可测试" class="headerlink" title="闭包导致的 api 不可测试"></a>闭包导致的 api 不可测试</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createCount</span>(<span class="params">initialCount</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> countStore = <span class="keyword">new</span> CountStore(initialCount);</span><br><span class="line">  <span class="keyword">const</span> loadingStore = <span class="keyword">new</span> LoadingStore();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> onClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    CountPresenter.setCount(countStore, countStore.count + <span class="number">1</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> didMount = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">const</span> newCount = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="number">10</span>);</span><br><span class="line">    CountPresenter.setCount(countStore, newCount);</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> observer(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      didMount();</span><br><span class="line">    &#125;, []);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;CountUI</span><br><span class="line">        count=&#123;countStore.count&#125;</span><br><span class="line">        loading=&#123;loadingStore.loading&#125;</span><br><span class="line">        onClick=&#123;onClick&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> Count = createCount();</span><br></pre></td></tr></table></figure>
+
+<p>对于该工程函数，它将承担了状态与逻辑的聚合、组件的创建等任务，但由于闭包导致<code>onClick</code>、<code>didMount</code>等聚合后产生的 api 无法被测试。解决的办法其实很简单——OOP，让我们将工厂函数转化为工厂类：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> CountFactory &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span></span><br><span class="line"><span class="params">    <span class="keyword">private</span> countStore: CountStore,</span></span><br><span class="line"><span class="params">    <span class="keyword">private</span> loadingStore: LoadingStore</span></span><br><span class="line"><span class="params">  </span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">  onClick() &#123;</span><br><span class="line">    CountPresenter.setCount(<span class="keyword">this</span>.countStore, <span class="keyword">this</span>.countStore.count + <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  didMount = <span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">const</span> newCount = <span class="keyword">await</span> <span class="built_in">Promise</span>.resolve(<span class="number">10</span>);</span><br><span class="line">    CountPresenter.setCount(countStore, newCount);</span><br><span class="line">    LoadingPresenter.setLoading(loadingStore, <span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  create() &#123;</span><br><span class="line">    <span class="keyword">return</span> observer(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        didMount();</span><br><span class="line">      &#125;, []);</span><br><span class="line">      <span class="keyword">return</span> (</span><br><span class="line">        &lt;CountUI</span><br><span class="line">          loading=&#123;<span class="keyword">this</span>.loadingStore.loading&#125;</span><br><span class="line">          count=&#123;<span class="keyword">this</span>.countStore.count&#125;</span><br><span class="line">          onClick=&#123;<span class="keyword">this</span>.onClick&#125;</span><br><span class="line">        /&gt;</span><br><span class="line">      );</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> countFactory = <span class="keyword">new</span> CountFactory(<span class="keyword">new</span> CountStore(), <span class="keyword">new</span> LoadingStore());</span><br><span class="line"><span class="keyword">const</span> Count = countFactory.create();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>我们将<code>countStore</code>与<code>loadingStore</code>转化为私有属性实现<code>依赖的解耦</code>（同时借助 ts 对 class 的优化，省去了手动赋值的过程）</li>
+<li>我们将<code>onClick</code>与<code>didMount</code>转变为类的成员方法，使得其能对外暴露，方便测试</li>
+<li>作为牺牲，我们暂时移除为<code>countStore</code>等被依赖的 store 提供初始化参数的功能（一般在 redux 中，初始值都是固定的，这点牺牲可以忍受）</li>
+</ul>
+<h2 id="接收全局-Store、Service"><a href="#接收全局-Store、Service" class="headerlink" title="接收全局 Store、Service"></a>接收全局 Store、Service</h2><p>在我们将工厂函数转变为工厂类后，失去了通过函数参数像工厂提供<code>全局Store和Service</code>的功能，该功能在组件间通信、发送接口请求时非常重要。为此，我们将创建一个工厂基类：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ComponentType &#125; <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> BaseFactory&lt;St, Sv&gt; &#123;</span><br><span class="line">  <span class="keyword">protected</span> globalStores: St;</span><br><span class="line">  <span class="keyword">protected</span> services: Sv;</span><br><span class="line">  receive(&#123; globalStores, services &#125;: BaseFactoryParams&lt;St, Sv&gt;) &#123;</span><br><span class="line">    <span class="keyword">this</span>.globalStores = globalStores;</span><br><span class="line">    <span class="keyword">this</span>.services = services;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">abstract</span> create(): ComponentType;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> BaseFactoryParams&lt;St, Sv&gt; &#123;</span><br><span class="line">  globalStores?: St;</span><br><span class="line">  services?: Sv;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> globalStores = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> services = &#123;&#125;;</span><br><span class="line"><span class="keyword">type</span> GlobalStores = <span class="keyword">typeof</span> globalStores;</span><br><span class="line"><span class="keyword">type</span> Services = <span class="keyword">typeof</span> services;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> CountFactory <span class="keyword">extends</span> BaseFactory&lt;GlobalStores, Services&gt; &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> countFactory = <span class="keyword">new</span> CountFactory(<span class="keyword">new</span> CountStore(), <span class="keyword">new</span> LoadingStore());</span><br><span class="line">countFactory.receive(&#123; globalStores, services &#125;);</span><br><span class="line"><span class="keyword">const</span> Count = countFactory.create();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>BaseFactory</code>类具有 2 个成员属性<code>globalStores</code>和<code>services</code>，前者将保存用户基本信息、loading 等全局状态，后者与发送接口请求相关。</li>
+<li><code>BaseFactory</code>类具有<code>receive</code>公有方法，用于外部将需要的数据传递进来并赋值。</li>
+<li>后续的工厂类将继承<code>CountFactory</code>，并在实例化后调用<code>receive</code>方法</li>
+</ul>
+<h2 id="使用-Reflect-Metadata-实现自动依赖注入"><a href="#使用-Reflect-Metadata-实现自动依赖注入" class="headerlink" title="使用 Reflect-Metadata 实现自动依赖注入"></a>使用 Reflect-Metadata 实现自动依赖注入</h2><p>在完成第一步后，我们虽然实现了依赖解耦，但也面临一个新的问题：每次创建工厂实例都需要手动传递依赖类的实例，这个过程若人工完成则非常容易犯错。为此，我们将通过<a href="https://jkchao.github.io/typescript-book-chinese/tips/metadata.html#基础" target="_blank" rel="noopener">metadata</a>提供的元编程能力，将依赖注入自动化</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"reflect-metadata"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Constructor&lt;T = <span class="built_in">any</span>&gt; = <span class="keyword">new</span> (...args: <span class="built_in">any</span>[]) =&gt; T;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Injectable = (): <span class="function"><span class="params">ClassDecorator</span> =&gt;</span> target =&gt; &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Factory = &lt;T <span class="keyword">extends</span> object, K <span class="keyword">extends</span> keyof T&gt;(</span><br><span class="line">  target: Constructor&lt;T&gt;</span><br><span class="line">): <span class="function"><span class="params">T</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 获取所有注入的服务</span></span><br><span class="line">  <span class="keyword">const</span> providers = Reflect.getMetadata(<span class="string">"design:paramtypes"</span>, target) || [];</span><br><span class="line">  <span class="keyword">const</span> args = providers.map(<span class="function">(<span class="params">provider: Constructor</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// return new provider(new)</span></span><br><span class="line">    <span class="keyword">return</span> Factory(provider);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> target(...args);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Injectable</span>()</span><br><span class="line"><span class="keyword">class</span> CountFactory <span class="keyword">extends</span> BaseFactory&lt;GlobalStores, Services&gt; &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> Count = Factory(CountFactory)</span><br><span class="line">  .receive(&#123; globalStores, services &#125;)</span><br><span class="line">  .create();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>借助强大的 metadata 元编程，ts 会在经过<code>Injectable</code>装饰器描述的<code>CountFactory</code>类上，将构造函数参数的类型<code>CountStore</code>和<code>LoadingStore</code>记录在<code>CountFactory</code>上</li>
+<li><code>Factory</code>将会读取传递给它的<code>CountFactory</code>上的元数据，得到<code>[CountStore, LoadingStore]</code>这一数组（数组的成员均为实体类）</li>
+<li><code>Factory</code>将这些实体类实例化并作为参数用于<code>CountFactory</code>的实例化，这样自动依赖注入的过程就完成了</li>
+</ul>
+<p>可以看到，到这一步为止，将工厂函数改造为工厂类带来的大多数问题都已经被解决，而两个组件之间的差异也仅在于传递给<code>Factory</code>的工厂类名称而已。</p>
+<h2 id="类似-dva-loading-的内置-loading"><a href="#类似-dva-loading-的内置-loading" class="headerlink" title="类似 dva-loading 的内置 loading"></a>类似 dva-loading 的内置 loading</h2><p>在将工厂函数的原有问题解决完之后，我们会发现一个之前所忽略的一个小问题——需要人工设置 loading 状态——也在引入成员装饰器后有了解决的希望。这就开始着手处理：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; observable, action &#125; <span class="keyword">from</span> <span class="string">"mobx"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> CounterActions &#123;</span><br><span class="line">  [name: <span class="built_in">string</span>]: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Actions &#123;</span><br><span class="line">  [name: <span class="built_in">string</span>]: <span class="built_in">boolean</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Counter &#123;</span><br><span class="line">  actions: Actions;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> counter: Counter = &#123;</span><br><span class="line">  actions: &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">actionCount</span>(<span class="params">action: <span class="built_in">string</span>, state: <span class="built_in">boolean</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> counter.actions[action] === <span class="string">"undefined"</span>) &#123;</span><br><span class="line">    counter.actions[action] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (state === <span class="literal">true</span>) &#123;</span><br><span class="line">    counter.actions[action] += <span class="number">1</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (state === <span class="literal">false</span>) &#123;</span><br><span class="line">    counter.actions[action] = <span class="built_in">Math</span>.max(counter.actions[action] - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> counter.actions[action] &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> LoadingStore &#123;</span><br><span class="line">  <span class="comment">// load status of each action</span></span><br><span class="line">  <span class="meta">@observable</span></span><br><span class="line">  actions: Actions = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// change load status</span></span><br><span class="line">  <span class="meta">@action</span></span><br><span class="line">  change = <span class="function">(<span class="params">model: <span class="built_in">string</span>, action: <span class="built_in">string</span>, state: <span class="built_in">boolean</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (action) &#123;</span><br><span class="line">      <span class="keyword">this</span>.actions[action] = actionCount(action, state);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> loadingStore = <span class="keyword">new</span> LoadingStore();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loading</span>(<span class="params"></span>): <span class="title">MethodDecorator</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target, key, descriptor</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> model = target.<span class="keyword">constructor</span>.name;</span><br><span class="line">    <span class="keyword">const</span> action = <span class="string">`<span class="subst">$&#123;model&#125;</span>/<span class="subst">$&#123;<span class="built_in">String</span>(key)&#125;</span>`</span>;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      value: funcWithLoading([model, action], descriptor.value),</span><br><span class="line">      enumerable: <span class="literal">false</span>,</span><br><span class="line">      configurable: <span class="literal">true</span>,</span><br><span class="line">      writable: <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">funcWithLoading</span>(<span class="params">names: [<span class="built_in">string</span>, <span class="built_in">string</span>], func: <span class="built_in">any</span>, scope?: object</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args: <span class="built_in">any</span>[]</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> [model, action] = names;</span><br><span class="line">    loadingStore.change(model, action, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">const</span> promise = func.apply(scope || <span class="keyword">this</span>, args);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> promise === <span class="string">"object"</span> &amp;&amp; <span class="keyword">typeof</span> promise.finally === <span class="string">"function"</span>) &#123;</span><br><span class="line">      promise.finally(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        loadingStore.change(model, action, <span class="literal">false</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      loadingStore.change(model, action, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> promise;</span><br><span class="line">  &#125; <span class="keyword">as</span> <span class="built_in">any</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> globalStores = &#123; loadingStore &#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Injectable</span>()</span><br><span class="line"><span class="keyword">class</span> CountFactory <span class="keyword">extends</span> BaseFactory&lt;GlobalStores, Services&gt; &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> countStore: CountStore</span>) &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.didMount = <span class="keyword">this</span>.didMount.bind(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  onClick() &#123;</span><br><span class="line">    CountPresenter.setCount(<span class="keyword">this</span>.countStore, <span class="keyword">this</span>.countStore.count + <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@loading</span>()</span><br><span class="line">  <span class="keyword">async</span> didMount() &#123;</span><br><span class="line">    <span class="keyword">const</span> newCount: <span class="built_in">number</span> = <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">res, rej</span>) =&gt;</span> &#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        res(<span class="number">10</span>);</span><br><span class="line">      &#125;, <span class="number">2000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    CountPresenter.setCount(<span class="keyword">this</span>.countStore, newCount);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  create = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> observer(<span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">      &lt;CountView</span><br><span class="line">        loading=&#123;</span><br><span class="line">          <span class="keyword">this</span>.globalStores.loadingStore.actions[<span class="string">"CountFactory/didMount"</span>]</span><br><span class="line">        &#125;</span><br><span class="line">        count=&#123;<span class="keyword">this</span>.countStore.count&#125;</span><br><span class="line">        onClick=&#123;<span class="keyword">this</span>.onClick&#125;</span><br><span class="line">        didMount=&#123;<span class="keyword">this</span>.didMount&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    ));</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Count = Factory(CountFactory)</span><br><span class="line">  .receive(&#123; globalStores, services &#125;)</span><br><span class="line">  .create();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>我们通过 mobx 定义了一个<code>LoadingStore</code>类和对应的<code>loading</code>装饰器，前者保存了所有的被注册过的异步 api 的 loading 状态，后者通过 descriptor 对 loadingStore 进行操作。</li>
+<li><code>globalStores</code>获取了<code>loadingStore</code>，并通过<code>BaseFactory</code>的<code>receive</code>方法将 loadingStore 注入到工厂类中。</li>
+<li><code>CountFactory</code>工厂类对异步操作<code>didMount</code>附加装饰器，并在 create 中通过<code>类名/方法名</code>的形式取得这一 api 的 loading 状态。</li>
+</ul>
+<p>这种方法相关便捷的实现了 loading 的内置效果，但是也存在一些问题：</p>
+<ol>
+<li>loadingStore 是一个独立的全局 Store，若某个工厂类被创建了 2 次，并且他们同时存在，那么 loading 便会互相干扰。</li>
+<li>由于只有<code>MethodDecorator</code>能通过第三个参数取得原本属性的 descriptor，而<code>PropertyDecorator</code>不能，且箭头函数定义方式会将函数以<code>成员属性</code>而非<code>原型方法</code>的形式创建，因此 loading 装饰器无法与箭头函数共存，需要在构造函数中人为绑定 this（是不是很熟悉？）</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>至此，我们已经对原本的工厂函数进行大刀阔斧的改造，解决了依赖耦合、难以测试的问题，通过提供了自动依赖注入、内置 loading 的功能，大大提升了该模式的可用性。<br>到这里我们可以看到，在模式下的组件，整体上分为 4 层：</p>
+<ol>
+<li>基于类的持久层：Store 与 Presenter</li>
+<li>基于类的工厂：Factory</li>
+<li>基于类的 Api 等：Service</li>
+<li>函数式的组件：View</li>
+</ol>
+<p>组件的函数化与逻辑的 oop 化是一个明显的特征。由于组件不再承担大量业务逻辑，函数式的写法可读性更高；而其他层为了使结构更清晰、易于测试，选择了 OOP 的模式</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ol>
+<li><a href="https://jkchao.github.io/typescript-book-chinese/tips/metadata.html#自定义-metadatakey" target="_blank" rel="noopener">Reflect.metadata</a></li>
+<li><a href="https://github.com/niqingyang/mobx-loading" target="_blank" rel="noopener">mobx-loading</a></li>
+<li><a href="https://github.com/Tan90Qian/react-factory-demo" target="_blank" rel="noopener">Demo repo</a></li>
+<li><a href="https://codesandbox.io/s/muddy-breeze-vfgbk" target="_blank" rel="noopener">Demo 演示</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/blog/2020/02/09/Monorepo-and-CI/" rel="next" title="Monorepo and CI">
+                  <i class="fa fa-chevron-left"></i> Monorepo and CI
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/blog/2020/05/12/Vue-next-introduction-1/" rel="prev" title="Vue新版本前瞻（1）">
+                  Vue新版本前瞻（1） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#优化"><span class="nav-number">1.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#闭包导致的-api-不可测试"><span class="nav-number">1.1.</span> <span class="nav-text">闭包导致的 api 不可测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接收全局-Store、Service"><span class="nav-number">1.2.</span> <span class="nav-text">接收全局 Store、Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Reflect-Metadata-实现自动依赖注入"><span class="nav-number">1.3.</span> <span class="nav-text">使用 Reflect-Metadata 实现自动依赖注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类似-dva-loading-的内置-loading"><span class="nav-number">1.4.</span> <span class="nav-text">类似 dva-loading 的内置 loading</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-number">3.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tan90Qian</p>
+  <div class="site-description" itemprop="description">A FrontEnd developer's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/blog/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tan90Qian</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+<div>
+  <p>推荐链接：<a href="https://anran758.github.io/blog/" target="_blank" rel="noopener">Anran758's blog</a></p>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
